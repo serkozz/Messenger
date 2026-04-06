@@ -1,4 +1,4 @@
-# 1. Заппустить RabbitMq
+# 1. Запустить RabbitMq
 
 В SharedLibrary выполнить скрипт init-rabbit.ps1
 
