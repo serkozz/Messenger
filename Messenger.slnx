@@ -1,5 +1,5 @@
 <Solution>
   <Project Path="IdentityMicroservice/IdentityMicroservice.csproj" />
   <Project Path="ProfileMicroservice/ProfileMicroservice.csproj" />
-  <Project Path="SharedLibrary/SharedLibrary.csproj" />
+  <Project Path="Shared/Shared.csproj" />
 </Solution>

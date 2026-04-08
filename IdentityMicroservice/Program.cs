@@ -1,12 +1,11 @@
+using IdentityMicroservice;
 using IdentityMicroservice.Data;
 using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
-using SharedLibrary.Events;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -61,21 +60,6 @@ if (app.Environment.IsDevelopment())
     app.MapScalarApiReference();
 }
 
-var identityGroup = app.MapGroup("/identity");
-identityGroup.MapIdentityApi<IdentityUser>();
-
-app.MapPost("/auth/register", async (RegisterRequest model, UserManager<IdentityUser> userManager, IPublishEndpoint publishEndpoint) =>
-{
-    var user = new IdentityUser { UserName = model.Email, Email = model.Email };
-    var result = await userManager.CreateAsync(user, model.Password);
-
-    if (result.Succeeded)
-    {
-        await publishEndpoint.Publish(new UserCreatedEvent(user.Id, user.Email));
-        return Results.Ok(new { Message = "User registered and profile event sent" });
-    }
-
-    return Results.BadRequest(result.Errors);
-});
+app.MapIdentityMicroservice();
 
 app.Run();

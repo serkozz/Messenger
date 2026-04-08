@@ -1,5 +1,8 @@
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
+using ProfileMicroservice;
+using ProfileMicroservice.Consumers;
+using ProfileMicroservice.Data;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,9 +16,12 @@ builder.Services.AddOpenApi(options =>
     });
 });
 
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 builder.Services.AddMassTransit(x =>
 {
-    x.AddConsumer<UserCreatedConsumer>();
+    x.AddConsumer<IdentityCreatedEventConsumer>();
 
     x.UsingRabbitMq((context, cfg) =>
     {
@@ -35,5 +41,7 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
     app.MapScalarApiReference();
 }
+
+app.MapProfileMicroservice();
 
 app.Run();
